@@ -5,7 +5,9 @@ frappe.pages['libradashboard'].on_page_load = function(wrapper) {
 		single_column: true
 	});
 
-	frappe.libradashboard.make(page)
+	frappe.libradashboard.make(page);
+	
+	frappe.libradashboard.getCustomerStandardSettings();
 	frappe.libradashboard.getStandardChartType(page);
 	frappe.breadcrumbs.add("libraDash");
 }
@@ -44,6 +46,9 @@ frappe.libradashboard = {
 		});
 		this.page.main.find(".btn-percentage-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "percentage");
+		});
+		this.page.main.find(".collapse-customer").on('click', function() {
+			frappe.libradashboard.newChart(page, frappe.libradashboard.getStandardChartType(page));
 		});
 	},
 	newChart: function(page, style) {
@@ -88,6 +93,17 @@ frappe.libradashboard = {
 		frappe.model.get_value('Standard Settings', {'name': 'Standard Settings'}, 'customer_chart_type', function(d) {
 			frappe.libradashboard.newChart(page, d.customer_chart_type);
 		 });
+	},
+	getCustomerStandardSettings: function() {
+		var doctype = "Standard Settings";
+		frappe.model.with_doc(doctype, doctype, function() {
+			var values = frappe.model.get_list(doctype);			
+			// Customer Area
+			if (values[0].customer_show == "0") {
+				$("#CustomerAreaBTN").click();
+			}
+			// Sales Area
+		});
 	}
 }
 
