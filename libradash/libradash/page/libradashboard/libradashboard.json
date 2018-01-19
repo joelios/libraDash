@@ -1,0 +1,23 @@
+{
+ "content": null, 
+ "creation": "2018-01-19 12:07:14.494537", 
+ "docstatus": 0, 
+ "doctype": "Page", 
+ "idx": 0, 
+ "modified": "2018-01-19 12:07:24.964518", 
+ "modified_by": "Administrator", 
+ "module": "libraDash", 
+ "name": "libradashboard", 
+ "owner": "Administrator", 
+ "page_name": "libraDashboard", 
+ "roles": [
+ {
+  "role": "System Manager"
+ }
+ ], 
+ "script": null, 
+ "standard": "Yes", 
+ "style": null, 
+ "system_page": 0, 
+ "title": "libraDashboard"
+}
