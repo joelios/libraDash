@@ -29,20 +29,20 @@ frappe.libradashboard = {
             location.reload();
 		});
 		
-		// attach button handlers
-		this.page.main.find(".btn-bar").on('click', function() {
+		// attach button handlers for Customer Area
+		this.page.main.find(".btn-bar-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "bar");
 		});
-		this.page.main.find(".btn-line").on('click', function() {
+		this.page.main.find(".btn-line-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "line");
 		});
-		this.page.main.find(".btn-scatter").on('click', function() {
+		this.page.main.find(".btn-scatter-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "scatter");
 		});
-		this.page.main.find(".btn-pie").on('click', function() {
+		this.page.main.find(".btn-pie-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "pie");
 		});
-		this.page.main.find(".btn-percentage").on('click', function() {
+		this.page.main.find(".btn-percentage-customer").on('click', function() {
 			frappe.libradashboard.newChart(page, "percentage");
 		});
 	},
@@ -85,12 +85,13 @@ frappe.libradashboard = {
 		});
 	},
 	getStandardChartType: function(page) {
-		frappe.model.get_value('Standard Settings', {'name': 'Standard Settings'}, 'chart_type', function(d) {
-			console.log(d.chart_type)
-			frappe.libradashboard.newChart(page, d.chart_type);
+		frappe.model.get_value('Standard Settings', {'name': 'Standard Settings'}, 'customer_chart_type', function(d) {
+			frappe.libradashboard.newChart(page, d.customer_chart_type);
 		 });
 	}
 }
+
+
 
 
 
