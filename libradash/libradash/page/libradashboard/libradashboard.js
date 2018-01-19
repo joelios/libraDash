@@ -67,8 +67,8 @@ frappe.libradashboard = {
 			]
 		};
 		var chart = new Chart({
-			parent: "#BarChart", // or a DOM element
-			title: "Bar Chart",
+			parent: "#CustomerChart", // or a DOM element
+			title: "Lead / Customer overview",
 			data: data,
 			type: style, // or 'line', 'scatter', 'pie', 'percentage'
 			height: 250,

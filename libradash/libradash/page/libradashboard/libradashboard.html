@@ -1,13 +1,11 @@
-<style>
-	#chart{
-		display: visible;
-	}
-</style>
 <div style="margin: 5px;">
-	<div id="BarChart"></div>
-	<button type="submit" class="btn btn-sm btn-primary btn-bar" style="width: 19%;">{{ __("Bar") }}</button>
-	<button type="submit" class="btn btn-sm btn-primary btn-line" style="width: 19%;">{{ __("Line") }}</button>
-	<button type="submit" class="btn btn-sm btn-primary btn-scatter" style="width: 19%;">{{ __("Scatter") }}</button>
-	<button type="submit" class="btn btn-sm btn-primary btn-pie" style="width: 19%;">{{ __("Pie") }}</button>
-	<button type="submit" class="btn btn-sm btn-primary btn-percentage" style="width: 19%;">{{ __("Percentage") }}</button>
+	<button data-toggle="collapse" data-target="#CustomerArea" class="btn btn-sm btn-primary">Show / Hide Customer Area</button>
+	<div id="CustomerArea" class="collapse in">
+		<div id="CustomerChart"></div>
+		<button type="submit" class="btn btn-sm btn-primary btn-bar" style="width: 19%;">{{ __("Bar") }}</button>
+		<button type="submit" class="btn btn-sm btn-primary btn-line" style="width: 19%;">{{ __("Line") }}</button>
+		<button type="submit" class="btn btn-sm btn-primary btn-scatter" style="width: 19%;">{{ __("Scatter") }}</button>
+		<button type="submit" class="btn btn-sm btn-primary btn-pie" style="width: 19%;">{{ __("Pie") }}</button>
+		<button type="submit" class="btn btn-sm btn-primary btn-percentage" style="width: 19%;">{{ __("Percentage") }}</button>
+	</div>
 </div>
