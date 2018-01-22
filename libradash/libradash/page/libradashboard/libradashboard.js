@@ -6,16 +6,20 @@ frappe.pages['libradashboard'].on_page_load = function(wrapper) {
 	});
 
 	frappe.libradashboard.make(page);
+	frappe.libradashboard.getMonthAsInt(page);
 	
 	//Customer Section
 	frappe.libradashboard.setVisabilityOfSection(page, "Customer");
-	frappe.libradashboard.getStandardSettings(page, "Customer", "");
+	frappe.libradashboard.getStandardSettings(page, "Customer");
 	
 	//Sales Section
 	frappe.libradashboard.setVisabilityOfSection(page, "Sales");
 	frappe.libradashboard.getStandardSettings(page, "Sales");
 	
+	frappe.breadcrumbs.add("libraDash");
 }
+
+var mont_as_int = {customer_from: 0, customer_to: 0, sales_from: 0, sales_to: 0};
 
 frappe.libradashboard = {
 	make: function(page) {
@@ -38,7 +42,8 @@ frappe.libradashboard = {
 		// attach button handlers for Customer Area
 		this.page.main.find(".btn-bar-customer").on('click', function() {
 			if (page.main.find("#customer_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Customer", "bar");
+				frappe.libradashboard.getMonthAsInt(page);
+				frappe.libradashboard.getStandardSettings(page, "Customer", "bar");
 			} else {
 				frappe.msgprint("to be programmed - for testing, do ignore standards");
 			}
@@ -142,11 +147,19 @@ frappe.libradashboard = {
 			//console.log(d);
 			//return d;
 			if (custom_chart_type!="") {
-				frappe.libradashboard.defineMonthFromInt(2,3, d, page, section, custom_chart_type);
-				//INFO(!): Die ersten beiden Parameter (2,3) sind erster und letzter monat aus den standard einstellungen als int. Das Auslesen dieser int muss noch programmiert werden.
+				if (section == "Customer") {
+					frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section, custom_chart_type);
+				}
+				if (section == "Sales") {
+					frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section, custom_chart_type);
+				}
 			} else {
-				frappe.libradashboard.defineMonthFromInt(2,3, d, page, section);
-				//INFO(!): Die ersten beiden Parameter (2,3) sind erster und letzter monat aus den standard einstellungen als int. Das Auslesen dieser int muss noch programmiert werden.
+				if (section == "Customer") {
+					frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section);
+				}
+				if (section == "Sales") {
+					frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section);
+				}
 			}			
 		 });
 	},
@@ -192,11 +205,9 @@ frappe.libradashboard = {
 		}
 		//return months;
 		if (custom_chart_type!="") {
-			frappe.libradashboard.getCustomerQTY(2,3, months, Standard_settings, page, section, custom_chart_type);
-			//INFO(!): Die ersten beiden Parameter (2,3) sind erster und letzter monat aus den standard einstellungen als int. Das Auslesen dieser int muss noch programmiert werden.
+			frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section, custom_chart_type);
 		} else {
-			frappe.libradashboard.getCustomerQTY(2,3, months, Standard_settings, page, section);
-			//INFO(!): Die ersten beiden Parameter (2,3) sind erster und letzter monat aus den standard einstellungen als int. Das Auslesen dieser int muss noch programmiert werden.
+			frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section);
 		}
 	},
 	getCustomerQTY: function(start, end, months, Standard_settings, page, section, custom_chart_type="") {
@@ -238,7 +249,7 @@ frappe.libradashboard = {
 				datasets: [
 				  {
 					title: "New Leads",
-					values: [1, 2]
+					values: input_daten
 				  },
 				  {
 					title: "Active Customer",
@@ -246,7 +257,7 @@ frappe.libradashboard = {
 				  },
 				  {
 					title: "Inactive Customers",
-					values: [0, 0]
+					values: input_daten
 				  }
 				]
 			};
@@ -277,15 +288,15 @@ frappe.libradashboard = {
 				datasets: [
 				  {
 					title: "Some Data",
-					values: [25, 40]
+					values: input_daten
 				  },
 				  {
 					title: "Another Set",
-					values: [25, 50]
+					values: input_daten
 				  },
 				  {
 					title: "Yet Another",
-					values: [15, 20]
+					values: input_daten
 				  }
 				]
 			};
@@ -308,5 +319,22 @@ frappe.libradashboard = {
 			});
 		}
 	},
-	
+	getMonthAsInt: function(page) {
+		
+		for (var i = 0; i <= 11; i++) {
+			if (page.main.find("#customerFrom")[0][i].selected == true) {
+				mont_as_int.customer_from = i + 1;
+			}
+			if (page.main.find("#customerTo")[0][i].selected == true) {
+				mont_as_int.customer_to = i + 1;
+			}
+			if (page.main.find("#salesFrom")[0][i].selected == true) {
+				mont_as_int.sales_from = i + 1;
+			}
+			if (page.main.find("#salesTo")[0][i].selected == true) {
+				mont_as_int.sales_to = i + 1;
+			}
+		}
+		//console.log(mont_as_int);
+	}
 }
