@@ -2,7 +2,7 @@
 	<!-- Customer Area -->
 	<div style="margin: 5px;">
 		<button data-toggle="collapse" data-target="#CustomerArea" id="CustomerAreaBTN" class="btn btn-sm btn-info btn-block collapse-customer" style="">Show / Hide <strong>Customer Area</strong></button>
-		<div id="CustomerArea" class="collapse in">
+		<div id="CustomerArea" class="collapse">
 			<table style="width: 100%;">
 				<tr>
 					<td style="height: 5px;" colspan="8"></td>
@@ -46,8 +46,9 @@
 					</td>
 					<td style="20%;">
 						<h5 style="margin: 1px;">&nbsp;</h5>
-						<label class="checkbox-inline"><input type="checkbox" value="" checked>Leads</label>
-						<label class="checkbox-inline"><input type="checkbox" value="" checked>Customer</label>
+						<label class="checkbox-inline"><input id="leads" type="checkbox" value="" checked>Leads</label>
+						<label class="checkbox-inline"><input id="customer" type="checkbox" value="" checked>Customer</label>
+						<label class="checkbox-inline"><input id="customer_ignore" type="checkbox" value="">Ignore Standards</label>
 					</td>
 					<td style="width: 5%;">
 					</td>
@@ -59,7 +60,7 @@
 	<!-- Sales Area -->
 	<div style="margin: 5px;">
 		<button data-toggle="collapse" data-target="#SalesArea" id="SalesAreaBTN" class="btn btn-sm btn-info btn-block collapse-sales" style="">Show / Hide <strong>Sales Area</strong></button>
-		<div id="SalesArea" class="collapse in ">
+		<div id="SalesArea" class="collapse">
 			<table style="width: 100%;">
 				<tr>
 					<td style="height: 5px;" colspan="8"></td>
@@ -105,6 +106,7 @@
 						<h5 style="margin: 1px;">&nbsp;</h5>
 						<label class="checkbox-inline"><input type="checkbox" value="" checked>Leads</label>
 						<label class="checkbox-inline"><input type="checkbox" value="" checked>Customer</label>
+						<label class="checkbox-inline"><input id="sales_ignore" type="checkbox" value="">Ignore Standards</label>
 					</td>
 					<td style="width: 5%;">
 					</td>
