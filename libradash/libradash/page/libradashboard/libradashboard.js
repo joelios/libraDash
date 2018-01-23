@@ -4,9 +4,12 @@ frappe.pages['libradashboard'].on_page_load = function(wrapper) {
 		title: __('libraDashboard'),
 		single_column: true
 	});
-
+	
+	
+	
+	// create page
+	//-------------
 	frappe.libradashboard.make(page);
-	frappe.libradashboard.getMonthAsInt(page);
 	
 	//Customer Section
 	frappe.libradashboard.setVisabilityOfSection(page, "Customer");
@@ -29,52 +32,37 @@ frappe.libradashboard = {
 		var data = "";
 		$(frappe.render_template('libradashboard', data)).appendTo(me.body);
 		
-		// add menu button
+		// add menu buttons
         this.page.add_menu_item(__("Change Standard Settings"), function() {
-            // navigate to bank import tool
+            // navigate to global standard settings
             window.location.href="#Form/Standard Settings";
 		});
+		this.page.add_menu_item(__("Add User Specific Settings"), function() {
+            window.location.href="#Form/User Standard Settings/New User Standard Settings 1";
+		});
+		this.page.add_menu_item(__("Change User Specific Settings"), function() {
+            window.location.href="#Form/User Standard Settings/" + frappe.user.name;
+		});
 		this.page.add_menu_item(__("Reload"), function() {
-            // navigate to bank import tool
+            // reload page
             location.reload();
 		});
 		
 		// attach button handlers for Customer Area
 		this.page.main.find(".btn-bar-customer").on('click', function() {
-			if (page.main.find("#customer_ignore")[0].checked) {
-				frappe.libradashboard.getMonthAsInt(page);
 				frappe.libradashboard.getStandardSettings(page, "Customer", "bar");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
 		});
 		this.page.main.find(".btn-line-customer").on('click', function() {
-			if (page.main.find("#customer_ignore")[0].checked) {
 				frappe.libradashboard.getStandardSettings(page,"Customer", "line");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
 		});
 		this.page.main.find(".btn-scatter-customer").on('click', function() {
-			if (page.main.find("#customer_ignore")[0].checked) {
 				frappe.libradashboard.getStandardSettings(page,"Customer", "scatter");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
 		});
 		this.page.main.find(".btn-pie-customer").on('click', function() {
-			if (page.main.find("#customer_ignore")[0].checked) {
 				frappe.libradashboard.getStandardSettings(page,"Customer", "pie");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
 		});
 		this.page.main.find(".btn-percentage-customer").on('click', function() {
-			if (page.main.find("#customer_ignore")[0].checked) {
 				frappe.libradashboard.getStandardSettings(page,"Customer", "percentage");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
 		});
 		this.page.main.find(".collapse-customer").on('click', function() {
 			page.main.find("#customer_ignore")[0].checked = false;
@@ -83,43 +71,23 @@ frappe.libradashboard = {
 		
 		// attach button handlers for Sales Area
 		this.page.main.find(".btn-bar-sales").on('click', function() {
-			if (page.main.find("#sales_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Sales", "bar");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
+				frappe.libradashboard.getStandardSettings(page, "Sales", "bar");
 		});
 		this.page.main.find(".btn-line-sales").on('click', function() {
-			if (page.main.find("#sales_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Sales", "line");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
+				frappe.libradashboard.getStandardSettings(page, "Sales", "line");
 		});
 		this.page.main.find(".btn-scatter-sales").on('click', function() {
-			if (page.main.find("#sales_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Sales", "scatter");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
+				frappe.libradashboard.getStandardSettings(page, "Sales", "scatter");
 		});
 		this.page.main.find(".btn-pie-sales").on('click', function() {
-			if (page.main.find("#sales_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Sales", "pie");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
+				frappe.libradashboard.getStandardSettings(page, "Sales", "pie");
 		});
 		this.page.main.find(".btn-percentage-sales").on('click', function() {
-			if (page.main.find("#sales_ignore")[0].checked) {
-				frappe.libradashboard.getStandardSettings(page,"Sales", "percentage");
-			} else {
-				frappe.msgprint("to be programmed - for testing, do ignore standards");
-			}
+				frappe.libradashboard.getStandardSettings(page, "Sales", "percentage");
 		});
 		this.page.main.find(".collapse-sales").on('click', function() {
 			page.main.find("#sales_ignore")[0].checked = false;
-			frappe.libradashboard.getStandardSettings(page, "Sales");;
+			frappe.libradashboard.getStandardSettings(page, "Sales");
 		});
 	},
 	setVisabilityOfSection: function(page, type) {
@@ -143,25 +111,100 @@ frappe.libradashboard = {
 		});
 	},
 	getStandardSettings: function(page, section, custom_chart_type="") {
-		frappe.model.get_value('Standard Settings', {'name': 'Standard Settings'}, '', function(d) {
-			//console.log(d);
-			//return d;
-			if (custom_chart_type!="") {
-				if (section == "Customer") {
-					frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section, custom_chart_type);
+		frappe.call({
+			method: 'libradash.libradash.page.libradashboard.libradashboard.check_user_settings',
+			args: {
+				'user': frappe.user.name
+			},
+			callback: function(r) {
+				if (r.message) {
+					//-------------------------------------
+					// use user specific standard settings
+					//-------------------------------------
+					frappe.call({
+						method: "frappe.client.get",
+						args: {
+							doctype: "User Standard Settings",
+							name: r.message,
+						},
+						callback(d) {
+							if(d.message) {
+								//console.log(d.message);
+								if (!page.main.find("#customer_ignore")[0].checked) {
+									//set default value of month dropdowns
+									//Customer Area
+									page.main.find("#customerFrom-" + d.message.customer_from)[0].selected = true;
+									page.main.find("#customerTo-" + d.message.customer_to)[0].selected = true;
+								}
+								if (!page.main.find("#sales_ignore")[0].checked) {
+									//set default value of month dropdowns
+									//Sales Area
+									page.main.find("#salesFrom-" + d.message.sales_from)[0].selected = true;
+									page.main.find("#salesTo-" + d.message.sales_to)[0].selected = true;
+								}
+								
+								frappe.libradashboard.getMonthAsInt(page);
+								
+								if (custom_chart_type!="") {
+									if (section == "Customer") {
+										frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d.message, page, section, custom_chart_type);
+									}
+									if (section == "Sales") {
+										frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d.message, page, section, custom_chart_type);
+									}
+								} else {
+									if (section == "Customer") {
+										frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d.message, page, section);
+									}
+									if (section == "Sales") {
+										frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d.message, page, section);
+									}
+								}
+							}
+						}
+					});
+				} else {
+					//-------------------------------------
+					// use global standard settings
+					//-------------------------------
+					frappe.model.get_value('Standard Settings', {'name': 'Standard Settings'}, '', function(d) {
+						//console.log(d);
+						//return d;
+						
+						if (!page.main.find("#customer_ignore")[0].checked) {
+							//set default value of month dropdowns
+							//Customer Area
+							page.main.find("#customerFrom-" + d.customer_from)[0].selected = true;
+							page.main.find("#customerTo-" + d.customer_to)[0].selected = true;
+						}
+						if (!page.main.find("#sales_ignore")[0].checked) {
+							//set default value of month dropdowns
+							//Sales Area
+							page.main.find("#salesFrom-" + d.sales_from)[0].selected = true;
+							page.main.find("#salesTo-" + d.sales_to)[0].selected = true;
+						}
+						
+						frappe.libradashboard.getMonthAsInt(page);
+						
+						if (custom_chart_type!="") {
+							if (section == "Customer") {
+								frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section, custom_chart_type);
+							}
+							if (section == "Sales") {
+								frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section, custom_chart_type);
+							}
+						} else {
+							if (section == "Customer") {
+								frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section);
+							}
+							if (section == "Sales") {
+								frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section);
+							}
+						}			
+					 });
 				}
-				if (section == "Sales") {
-					frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section, custom_chart_type);
-				}
-			} else {
-				if (section == "Customer") {
-					frappe.libradashboard.defineMonthFromInt(mont_as_int.customer_from, mont_as_int.customer_to, d, page, section);
-				}
-				if (section == "Sales") {
-					frappe.libradashboard.defineMonthFromInt(mont_as_int.sales_from, mont_as_int.sales_to, d, page, section);
-				}
-			}			
-		 });
+			}
+		});
 	},
 	defineMonthFromInt: function(start, end, Standard_settings, page, section, custom_chart_type="") {
 		var months = [];
@@ -204,11 +247,21 @@ frappe.libradashboard = {
 			}
 		}
 		//return months;
-		if (custom_chart_type!="") {
-			frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section, custom_chart_type);
-		} else {
-			frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section);
+		if (section == "Customer"){
+			if (custom_chart_type!="") {
+				frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section, custom_chart_type);
+			} else {
+				frappe.libradashboard.getCustomerQTY(start, end, months, Standard_settings, page, section);
+			}
 		}
+		if (section == "Sales"){
+			if (custom_chart_type!="") {
+				frappe.libradashboard.getSalesQTY(start, end, months, Standard_settings, page, section, custom_chart_type);
+			} else {
+				frappe.libradashboard.getSalesQTY(start, end, months, Standard_settings, page, section);
+			}
+		}
+		
 	},
 	getCustomerQTY: function(start, end, months, Standard_settings, page, section, custom_chart_type="") {
 		frappe.call({
@@ -219,7 +272,27 @@ frappe.libradashboard = {
 			},
 			callback: function(r) {
 				if (r.message) {
-					//console.log(r.message.qty);
+					
+					//return r.message.qty;
+					if (custom_chart_type!="") {
+						frappe.libradashboard.newCustomerChart(page, Standard_settings, months, section, r.message.qty, custom_chart_type);
+					} else {
+						frappe.libradashboard.newCustomerChart(page, Standard_settings, months, section, r.message.qty);
+					}
+				}
+			}
+		});
+	},
+	getSalesQTY: function(start, end, months, Standard_settings, page, section, custom_chart_type="") {
+		frappe.call({
+			method: 'libradash.libradash.page.libradashboard.libradashboard.get_sales_qty',
+			args: {
+				'start': start,
+				'end': end
+			},
+			callback: function(r) {
+				if (r.message) {
+					
 					//return r.message.qty;
 					if (custom_chart_type!="") {
 						frappe.libradashboard.newCustomerChart(page, Standard_settings, months, section, r.message.qty, custom_chart_type);
@@ -242,6 +315,13 @@ frappe.libradashboard = {
 			}
 		}
 		if (section == "Customer") {
+			//console.log(input_daten);
+			var lead = [];
+			lead.push(input_daten.lead[0]);
+			var activ = [];
+			activ.push(input_daten.activ[0]);
+			var inactiv = [];
+			inactiv.push(input_daten.inactiv[0]);
 			var refID = "#CustomerChart";
 			var data = {
 				labels: months,
@@ -249,15 +329,15 @@ frappe.libradashboard = {
 				datasets: [
 				  {
 					title: "New Leads",
-					values: input_daten
+					values: lead
 				  },
 				  {
 					title: "Active Customer",
-					values: input_daten
+					values: activ
 				  },
 				  {
 					title: "Inactive Customers",
-					values: input_daten
+					values: inactiv
 				  }
 				]
 			};
@@ -277,26 +357,27 @@ frappe.libradashboard = {
 				// 'purple', 'magenta', 'grey', 'dark-grey']
 
 				format_tooltip_x: d => (d + '').toUpperCase(),
-				format_tooltip_y: d => d + ' pts'
+				format_tooltip_y: d => d
 			});
 		}
 		if (section == "Sales") {
+			//console.log(input_daten);
+			var salesorder = [];
+			salesorder.push(input_daten.salesorder[0]);
+			var salesinvoice = [];
+			salesinvoice.push(input_daten.salesinvoice[0]);
 			var refID = "#SalesChart";
 			var data = {
 				labels: months,
 
 				datasets: [
 				  {
-					title: "Some Data",
-					values: input_daten
+					title: "Sales Order",
+					values: salesorder
 				  },
 				  {
-					title: "Another Set",
-					values: input_daten
-				  },
-				  {
-					title: "Yet Another",
-					values: input_daten
+					title: "Sales Invoice",
+					values: salesinvoice
 				  }
 				]
 			};
@@ -307,7 +388,7 @@ frappe.libradashboard = {
 				type: chart_type, // or 'line', 'scatter', 'pie', 'percentage'
 				height: 250,
 
-				colors: ['#7cd6fd', 'violet', 'blue'],
+				colors: ['#7cd6fd', 'violet'],
 				// hex-codes or these preset colors;
 				// defaults (in order):
 				// ['light-blue', 'blue', 'violet', 'red',
@@ -315,7 +396,7 @@ frappe.libradashboard = {
 				// 'purple', 'magenta', 'grey', 'dark-grey']
 
 				format_tooltip_x: d => (d + '').toUpperCase(),
-				format_tooltip_y: d => d + ' pts'
+				format_tooltip_y: d => d
 			});
 		}
 	},

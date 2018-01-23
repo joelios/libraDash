@@ -24,6 +24,12 @@ def get_data():
 					"name": "Standard Settings",
 					"label": _("Dashboard Setup"),
 					"description": _("Setup for Dashboard")
+				},
+				{
+					"type": "doctype",
+					"name": "User Standard Settings",
+					"label": _("User specific standard settings"),
+					"description": _("User specific setup for Dashboard")
 				}
 			]
 		}
