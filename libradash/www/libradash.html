@@ -51,7 +51,7 @@
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-left">View Sales Order Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                         <div class="clearfix"></div>
@@ -67,14 +67,14 @@
                                             <i class="fa fa-cube fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">12</div>
-                                            <div>New Deliverys!</div>
+                                            <div class="huge">{{ new_delivery_notes_qty }}</div>
+                                            <div>New Delivery Note(s) in {{ month }}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-left">View Delivery Note Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                         <div class="clearfix"></div>
@@ -90,14 +90,14 @@
                                             <i class="fa fa-dollar fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">26</div>
-                                            <div>New Invoices!</div>
+                                            <div class="huge">{{ total_value_sales_invoice or '0' }}</div>
+                                            <div>{{ new_sales_invoices_qty }} New SINV(s) in {{ month }}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-left">View Sales Invoice Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                         <div class="clearfix"></div>
@@ -113,14 +113,14 @@
                                             <i class="fa fa-gear fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">13</div>
-                                            <div>Support Tickets!</div>
+                                            <div class="huge">{{ new_issues_qty }}</div>
+                                            <div>New Issue(s) in {{ month }}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
+                                        <span class="pull-left">View Issue Details</span>
                                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                                         <div class="clearfix"></div>
