@@ -52,6 +52,10 @@ $(function() {
 	var iss_total_nov = 0;
 	var iss_total_dec = 0;
 	
+	var verkauft = 0;
+	var verrechnet = 0;
+	var ausstehend = 0;
+	
 	frappe.call({
 		method: 'libradash.www.libradash.get_datas',
 		args: {},
@@ -203,6 +207,16 @@ $(function() {
 			if (r.message.issues.dec) {
 				iss_total_dec = r.message.issues.dec;
 			}
+			
+			if (r.message.verkauft) {
+				verkauft = r.message.verkauft;
+			}
+			if (r.message.verrechnet) {
+				verrechnet = r.message.verrechnet;
+			}
+			if (r.message.ausstehend) {
+				ausstehend = r.message.ausstehend;
+			}
 		
 	
 			Morris.Area({
@@ -308,23 +322,23 @@ $(function() {
 				lineColors: ['#f0ad4e', '#5cb85c', '#5e64ff', '#d9534f'],
 				fillOpacity: 0.0
 			});
+
+			Morris.Donut({
+				element: 'morris-donut-chart',
+				data: [{
+					label: "Verkauft",
+					value: verkauft
+				}, {
+					label: "Verrechnet",
+					value: verrechnet
+				}, {
+					label: "Ausstehend",
+					value: ausstehend
+				}],
+				resize: true
+			});
 		}
 	});
-
-    Morris.Donut({
-        element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
-        resize: true
-    });
 
     Morris.Bar({
         element: 'morris-bar-chart',

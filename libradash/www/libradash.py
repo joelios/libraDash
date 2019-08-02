@@ -103,4 +103,7 @@ def get_datas():
 	datas['issues']['oct'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-10-01' AND `opening_date` <= '{year}-10-31'""".format(year=year), as_list=True)[0][0]
 	datas['issues']['nov'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-11-01' AND `opening_date` <= '{year}-11-31'""".format(year=year), as_list=True)[0][0]
 	datas['issues']['dez'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-12-01' AND `opening_date` <= '{year}-12-31'""".format(year=year), as_list=True)[0][0]
+	datas['vekauft'] = frappe.db.sql("""SELECT SUM(`total`) FROM `tabSales Order` WHERE `transaction_date` >= '{year}-01-01' AND `transaction_date` <= '{year}-12-31'""".format(year=year), as_list=True)[0][0]
+	datas['verrechnet'] = frappe.db.sql("""SELECT SUM(`total`) FROM `tabSales Invoice` WHERE `posting_date` >= '{year}-01-01' AND `posting_date` <= '{year}-12-31'""".format(year=year), as_list=True)[0][0]
+	datas['ausstehend'] = frappe.db.sql("""SELECT SUM(`outstanding_amount`) FROM `tabSales Invoice` WHERE `posting_date` >= '{year}-01-01' AND `posting_date` <= '{year}-12-31'""".format(year=year), as_list=True)[0][0]
 	return datas
