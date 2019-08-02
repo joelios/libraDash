@@ -132,9 +132,9 @@
                     <!-- /.row -->
                     <div class="row">
                         <div class="col-lg-8">
-                            <div class="panel panel-default" id="current_year_overview">
+                            <div class="panel panel-default" id="current_year_overview_monetary">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Current Year Overview
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Current Year Overview (monetary)
                                     <div class="pull-right">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-xs dropdown-toggle"
@@ -143,9 +143,15 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                <li><a onclick="show_year_comparative();">Show prior year comparative</a>
+                                                <li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
                                                 </li>
-                                                <li><a onclick="show_prior_year();">Show prior year</a>
+                                                <li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -153,13 +159,13 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <div id="morris-area-chart-current-year"></div>
+                                    <div id="morris-area-chart-current-year-monetary"></div>
                                 </div>
                                 <!-- /.panel-body -->
                             </div>
-							<div class="panel panel-default" id="prior_year">
+							<div class="panel panel-default" id="current_year_overview_qty_based">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Overview
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Current Year Overview (qty based)
                                     <div class="pull-right">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-xs dropdown-toggle"
@@ -168,9 +174,15 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                <li><a onclick="show_year_comparative();">Show prior year comparative</a>
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
                                                 </li>
-                                                <li><a onclick="show_current_year();">Show current year</a>
+                                                <li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -178,13 +190,13 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <div id="morris-area-chart-prior-year"></div>
+                                    <div id="morris-area-chart-current-year-qty-based"></div>
                                 </div>
                                 <!-- /.panel-body -->
                             </div>
-							<div class="panel panel-default" id="prior_year_comparative">
+							<div class="panel panel-default" id="prior_year_monetary">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Comparative Overview
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Overview (monetary)
                                     <div class="pull-right">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-xs dropdown-toggle"
@@ -193,9 +205,15 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                <li><a onclick="show_prior_year();">Show prior year</a>
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
                                                 </li>
-                                                <li><a onclick="show_current_year();">Show current year</a>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -203,7 +221,100 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <div id="morris-bar-chart-prior-year-comparative"></div>
+                                    <div id="morris-area-chart-prior-year-monetary"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_qty_based">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Overview (qty based)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-area-chart-prior-year-qty-based"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_comparative_monetary">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Comparative Overview (monetary)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-bar-chart-prior-year-comparative-monetary"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_comparative_qty_based">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Comparative Overview (qty based)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-bar-chart-prior-year-comparative-qty-based"></div>
                                 </div>
                                 <!-- /.panel-body -->
                             </div>
