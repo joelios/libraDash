@@ -16,16 +16,21 @@ def get_context(context):
 		frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
 
 	context.show_sidebar=True
-	context['new_orders_qty'], context['month'] = new_orders()
-	context['new_delivery_notes_qty'] = new_deliverys()
-	context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
-	context['new_issues_qty'] = new_issues()
+	default = frappe.get_single("libradash settings")
+	context['style'] = "Default"
 	context['charts'] = get_charts()
 	context['querys'] = {}
 	for chart in get_charts():
 		if chart.typ == "Panel":
 			if chart.panel_sql_query:
 				context['querys'][chart.name] = get_panel_sql_query(chart.panel_sql_query)
+	if default.custom_layout == 1:
+		context['style'] = "Custom"
+	else:
+		context['new_orders_qty'], context['month'] = new_orders()
+		context['new_delivery_notes_qty'] = new_deliverys()
+		context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
+		context['new_issues_qty'] = new_issues()
 	
 def get_charts():
 	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` ORDER BY `idx` ASC""", as_dict=True)
@@ -349,3 +354,8 @@ def get_comparative_qty_based_datas():
 	datas['iss_total']['prior'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-01-01' AND `opening_date` <= '{year}-12-31'""".format(year=prior_year), as_list=True)[0][0]
 	datas['iss_total']['current'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-01-01' AND `opening_date` <= '{year}-12-31'""".format(year=current_year), as_list=True)[0][0]
 	return datas
+	
+@frappe.whitelist()
+def get_style():
+	default = frappe.get_single("libradash settings")
+	return default.custom_layout
