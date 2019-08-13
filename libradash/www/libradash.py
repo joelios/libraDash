@@ -20,6 +20,65 @@ def get_context(context):
 	context['new_delivery_notes_qty'] = new_deliverys()
 	context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
 	context['new_issues_qty'] = new_issues()
+	context['charts'] = get_charts()
+	context['querys'] = {}
+	for chart in get_charts():
+		if chart.typ == "Panel":
+			if chart.panel_sql_query:
+				context['querys'][chart.name] = get_panel_sql_query(chart.panel_sql_query)
+	
+def get_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` ORDER BY `idx` ASC""", as_dict=True)
+	return charts
+	
+@frappe.whitelist()
+def get_line_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Line Chart'""", as_dict=True)
+	for chart in charts:
+		data_arr = {}
+		for line in chart.line_chart_values.splitlines():
+			if line.split("#PER#")[0] in data_arr:
+				data_arr[line.split("#PER#")[0]][line.split("#PER#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#PER#")[1].split("#SQL#")[1], as_list=True)[0][0]
+			else:
+				data_arr[line.split("#PER#")[0]] = {}
+				data_arr[line.split("#PER#")[0]][line.split("#PER#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#PER#")[1].split("#SQL#")[1], as_list=True)[0][0]
+	
+		data = []
+		for period in data_arr:
+			_data = {}
+			_data['period'] = period
+			for key in data_arr[period]:
+				_data[key] = data_arr[period][key]
+			data.append(_data)
+		chart['line_chart_values'] = data
+	return charts
+	
+@frappe.whitelist()
+def get_pie_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Pie Chart'""", as_dict=True)
+	
+	for chart in charts:
+		
+		data = []
+		for line in chart.pie_chart_values.splitlines():
+			data_arr = {}
+			data_arr['label'] = line.split("#SQL#")[0]
+			data_arr['value'] = frappe.db.sql(line.split("#SQL#")[1], as_list=True)[0][0]
+			data.append(data_arr)
+		
+		chart['pie_chart_values'] = data
+	return charts
+	
+@frappe.whitelist()
+def get_query_data(query):
+	if frappe.session.user=='Guest':
+		frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
+	else:
+		result = frappe.db.sql(query, as_list=True)[0][0]
+		return result or 0
+	
+def get_panel_sql_query(query):
+	return frappe.db.sql(query, as_list=True)[0][0]
 	
 def new_orders():
 	month = datetime.now().month

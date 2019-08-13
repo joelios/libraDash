@@ -1,0 +1,367 @@
+
+
+
+{% extends "templates/web.html" %}
+{% block page_content %}
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        <link href="assets/libradash/css/metisMenu.min.css" rel="stylesheet">
+
+        <!-- Timeline CSS -->
+        <link href="assets/libradash/css/timeline.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="assets/libradash/css/startmin.css" rel="stylesheet">
+
+        <!-- Morris Charts CSS -->
+        <link href="assets/libradash/css/morris.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="assets/libradash/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		
+        <!-- <div id="wrapper"> -->
+
+            
+                
+
+            <!-- <div id="page-wrapper"> -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="page-header">Dashboard</h1>
+                        </div>
+                        <!-- /.col-lg-12 -->
+                    </div>
+                    <!-- /.row -->
+                    <div class="row">
+                        
+						<div class="col-lg-3 col-md-6">
+                            <div class="panel panel-yellow">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-shopping-cart fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{ new_orders_qty }}</div>
+                                            <div>New Sales Order(s) in {{ month }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer" onclick="openInNewTab('/desk#List/Sales Order/List');">
+                                        <span class="pull-left">View Sales Order Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-green">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-cube fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{ new_delivery_notes_qty }}</div>
+                                            <div>New Delivery Note(s) in {{ month }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer" onclick="openInNewTab('/desk#List/Delivery Note/List');">
+                                        <span class="pull-left">View Delivery Note Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-dollar fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{ total_value_sales_invoice or '0' }}</div>
+                                            <div>{{ new_sales_invoices_qty }} New SINV(s) in {{ month }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer" onclick="openInNewTab('/desk#List/Sales Invoice/List');">
+                                        <span class="pull-left">View Sales Invoice Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-red">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-gear fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{ new_issues_qty }}</div>
+                                            <div>New Issue(s) in {{ month }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer" onclick="openInNewTab('/desk#List/Issue/List');">
+                                        <span class="pull-left">View Issue Details</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="panel panel-default" id="current_year_overview_monetary">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Current Year Overview (monetary)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+                                                <li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-area-chart-current-year-monetary"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="current_year_overview_qty_based">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Current Year Overview (qty based)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+                                                <li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-area-chart-current-year-qty-based"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_monetary">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Overview (monetary)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-area-chart-prior-year-monetary"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_qty_based">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Overview (qty based)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-area-chart-prior-year-qty-based"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_comparative_monetary">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Comparative Overview (monetary)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative_qty();">Show prior year comparative (qty based)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-bar-chart-prior-year-comparative-monetary"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+							<div class="panel panel-default" id="prior_year_comparative_qty_based">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Prior Year Comparative Overview (qty based)
+                                    <div class="pull-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                    data-toggle="dropdown">
+                                                Actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                <li><a onclick="show_current_year();">Show current year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+                                                </li>
+												<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+                                                </li>
+												<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div id="morris-bar-chart-prior-year-comparative-qty-based"></div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                        <!-- /.col-lg-8 -->
+                        <div class="col-lg-4">
+                            
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Income Overview
+                                </div>
+                                <div class="panel-body">
+                                    <div id="morris-donut-chart"></div>
+                                    <a class="btn btn-default btn-block" onclick="openInNewTab('/desk#query-report/Accounts Receivable');">View Details</a>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                            
+                        </div>
+                        <!-- /.col-lg-4 -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+           <!--  </div> -->
+            <!-- /#page-wrapper -->
+
+      <!--   </div> -->
+        <!-- /#wrapper -->
+
+        <!-- jQuery -->
+        <script src="assets/libradash/js/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="assets/libradash/js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="assets/libradash/js/metisMenu.min.js"></script>
+
+        <!-- Morris Charts JavaScript -->
+        <script src="assets/libradash/js/raphael.min.js"></script>
+        <script src="assets/libradash/js/morris.min.js"></script>
+        <script src="assets/libradash/js/morris-data.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="assets/libradash/js/startmin.js"></script>
+
+{% endblock %}

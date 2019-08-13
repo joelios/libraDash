@@ -1,4 +1,75 @@
 $(function() {
+	//line charts
+	frappe.call({
+		method: 'libradash.www.libradash.get_line_charts',
+		args: {},
+		callback: function(r) {
+			if (r.message) {
+				var charts = r.message;
+				for (i=0; i<charts.length;i++){
+					var items = charts[i].line_chart_values;
+					var ykeys_values = JSON.parse(charts[i].line_chart_y_keys);
+					var colors = JSON.parse(charts[i].line_chart_colors) || ["#5cb85c", "#5e64ff", "#d9534f"];
+					var label_values = JSON.parse(charts[i].line_chart_y_labels);
+					var data_arr = []
+					Morris.Area({
+						element: charts[i].name + '-line-chart',
+						data: items,
+						xkey: 'period',
+						ykeys: ykeys_values,
+						xLabels: 'month',
+						labels: label_values,
+						/* xLabelFormat: function (d) {
+							var month = new Array(7);
+							month[0] = "Januar";
+							month[1] = "Februar";
+							month[2] = "März";
+							month[3] = "April";
+							month[4] = "Mai";
+							month[5] = "Juni";
+							month[6] = "Juli";
+							month[7] = "August";
+							month[8] = "September";
+							month[9] = "Oktober";
+							month[10] = "November";
+							month[11] = "Dezember";
+
+							return month[d.getMonth()]
+						}, */
+						xLabelAngle: parseInt(charts[i].line_chart_x_label_angle),
+						pointSize: parseInt(charts[i].line_chart_point_size),
+						hideHover: 'auto',
+						resize: true,
+						lineColors: colors,
+						fillOpacity: parseFloat(charts[i].line_chart_fill_opacity)
+					});
+				}
+			}
+		}
+	});
+	
+	//Pie charts
+	frappe.call({
+		method: 'libradash.www.libradash.get_pie_charts',
+		args: {},
+		callback: function(r) {
+			if (r.message) {
+				var charts = r.message;
+				for (i=0; i<charts.length;i++){
+					var items = charts[i].pie_chart_values;
+					var pie_colors = JSON.parse(charts[i].pie_chart_colors) || ["#5cb85c", "#5e64ff", "#d9534f"];
+					Morris.Donut({
+						element: charts[i].name + '-pie-chart',
+						data: items,
+						resize: true,
+						colors: pie_colors
+					});
+				}
+			}
+		}
+	});
+});
+/* $(function() {
 	// current year monetary
 	frappe.call({
 		method: 'libradash.www.libradash.get_monetary_datas',
@@ -1323,3 +1394,4 @@ $(function() {
     
 
 });
+ */
