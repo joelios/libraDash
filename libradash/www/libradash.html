@@ -29,7 +29,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h1 class="page-header">Dashboard {{ style }}</h1>
+                            <h1 class="page-header">{{ dashboard_title }}</h1>
                         </div>
                         <!-- /.col-lg-12 -->
                     </div>
@@ -63,6 +63,13 @@
 									{% set pie_chart_link_text = chart.pie_chart_link_text %}
 									{% set pie_chart_link = chart.pie_chart_link %}
 									{% include "/templates/pie_chart/pie_chart.html" %}
+								{% endif %}
+								<!-- bar chart -->
+								{% if chart.typ == 'Bar Chart' %}
+									{% set width = chart.width %}
+									{% set name = chart.name %}
+									{% set title = chart.bar_chart_title %}
+									{% include "/templates/bar_chart/bar_chart.html" %}
 								{% endif %}
 							{% endfor %}
 						{% else %}
@@ -397,6 +404,6 @@
         <script src="assets/libradash/js/morris-data.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="assets/libradash/js/startmin.js"></script>
+        <!--<script src="assets/libradash/js/startmin.js"></script>-->
 
 {% endblock %}

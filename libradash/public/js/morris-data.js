@@ -5,7 +5,7 @@ $(function() {
 		args: {},
 		callback: function(r) {
 			//custom way:
-			if (r.message == 1) {
+			if (r.message == "Custom") {
 				//line charts
 				frappe.call({
 					method: 'libradash.www.libradash.get_line_charts',
@@ -18,13 +18,27 @@ $(function() {
 								var ykeys_values = JSON.parse(charts[i].line_chart_y_keys);
 								var colors = JSON.parse(charts[i].line_chart_colors) || ["#5cb85c", "#5e64ff", "#d9534f"];
 								var label_values = JSON.parse(charts[i].line_chart_y_labels);
-								var data_arr = []
+								var _smooth = true;
+								if (charts[i].line_chart_smooth == 'False') {
+									_smooth = false;
+								}
+								var _hidehover = true;
+								if (charts[i].line_chart_hidehover == 'False') {
+									_hidehover = false;
+								}
+								if (charts[i].line_chart_hidehover == 'Always') {
+									_hidehover = 'always';
+								}
+								var _parsetime = true;
+								if (charts[i].line_chart_parsetime == 'False') {
+									_parsetime = false;
+								}
 								Morris.Area({
 									element: charts[i].name + '-line-chart',
 									data: items,
 									xkey: 'period',
 									ykeys: ykeys_values,
-									xLabels: 'month',
+									xLabels: charts[i].line_chart_xlabels_intervall,
 									labels: label_values,
 									/* xLabelFormat: function (d) {
 										var month = new Array(7);
@@ -45,10 +59,18 @@ $(function() {
 									}, */
 									xLabelAngle: parseInt(charts[i].line_chart_x_label_angle),
 									pointSize: parseInt(charts[i].line_chart_point_size),
-									hideHover: 'auto',
+									hideHover: _hidehover,
+									smooth: _smooth,
 									resize: true,
+									goals: JSON.parse(charts[i].line_chart_goals) || [],
+									goalLineColors: JSON.parse(charts[i].line_chart_goal_colors) || ["#5cb85c", "#5e64ff", "#d9534f"],
 									lineColors: colors,
-									fillOpacity: parseFloat(charts[i].line_chart_fill_opacity)
+									parseTime: _parsetime,
+									postUnits: charts[i].line_chart_postunits || '',
+									preUnits: charts[i].line_chart_preunits || '',
+									fillOpacity: parseFloat(charts[i].line_chart_fill_opacity),
+									events: JSON.parse(charts[i].line_chart_events) || [],
+									eventLineColors: JSON.parse(charts[i].line_chart_event_colors) || ["#5cb85c", "#5e64ff", "#d9534f"]
 								});
 							}
 						}
@@ -75,6 +97,54 @@ $(function() {
 						}
 					}
 				});
+				
+				//bar chart
+				frappe.call({
+					method: 'libradash.www.libradash.get_bar_charts',
+					args: {},
+					callback: function(r) {
+						if (r.message) {
+							var charts = r.message;
+							for (i=0; i<charts.length;i++){
+								var items = charts[i].bar_chart_values;
+								var _stacked = false;
+								var _axes = true;
+								var _grid = true;
+								var _hidehover = true;
+								if (charts[i].bar_chart_hidehover == 'False') {
+									_hidehover = false;
+								}
+								if (charts[i].bar_chart_hidehover == 'Always') {
+									_hidehover = 'always';
+								}
+								if (charts[i].bar_chart_stacked == 'True') {
+									var _stacked = true;
+								}
+								if (charts[i].bar_chart_axes == 'False') {
+									var _axes = false;
+								}
+								if (charts[i].bar_chart_grid == 'False') {
+									var _grid = true;
+								}
+								Morris.Bar({
+									element: charts[i].name + '-bar-chart',
+									data: items,
+									xkey: 'y',
+									ykeys: JSON.parse(charts[i].bar_chart_y_key),
+									labels: JSON.parse(charts[i].bar_chart_y_label),
+									barColors: JSON.parse(charts[i].bar_chart_colors) || ["#5cb85c", "#5e64ff", "#d9534f"],
+									stacked: _stacked,
+									axes: _axes,
+									grid: _grid,
+									hideHover: _hidehover,
+									resize: true
+								});
+							}
+						}
+					}
+				});
+				
+				
 			} else {
 				//default way:
 				// current year monetary

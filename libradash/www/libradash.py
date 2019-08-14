@@ -17,16 +17,15 @@ def get_context(context):
 
 	context.show_sidebar=True
 	default = frappe.get_single("libradash settings")
-	context['style'] = "Default"
+	context['style'] = default.layout
 	context['charts'] = get_charts()
 	context['querys'] = {}
+	context['dashboard_title'] = default.dashboard_title
 	for chart in get_charts():
 		if chart.typ == "Panel":
 			if chart.panel_sql_query:
 				context['querys'][chart.name] = get_panel_sql_query(chart.panel_sql_query)
-	if default.custom_layout == 1:
-		context['style'] = "Custom"
-	else:
+	if not default.layout == "Custom":
 		context['new_orders_qty'], context['month'] = new_orders()
 		context['new_delivery_notes_qty'] = new_deliverys()
 		context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
@@ -72,6 +71,27 @@ def get_pie_charts():
 			data.append(data_arr)
 		
 		chart['pie_chart_values'] = data
+	return charts
+	
+@frappe.whitelist()
+def get_bar_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Bar Chart'""", as_dict=True)
+	for chart in charts:
+		x_labels = []
+		data = []
+		for line in chart.bar_chart_values.splitlines():
+			if line.split("#XLAB#")[0] not in x_labels:
+				x_labels.append(line.split("#XLAB#")[0])
+		for xlab in x_labels:
+			data_arr = {}
+			for line in chart.bar_chart_values.splitlines():
+				if line.split("#XLAB#")[0] == xlab:
+					if 'y' not in data_arr:
+						data_arr['y'] = xlab
+					data_arr[line.split("#XLAB#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#XLAB#")[1].split("#SQL#")[1], as_list=True)[0][0]
+			data.append(data_arr)
+		chart['bar_chart_values'] = data
+	#print(charts)
 	return charts
 	
 @frappe.whitelist()
@@ -358,4 +378,4 @@ def get_comparative_qty_based_datas():
 @frappe.whitelist()
 def get_style():
 	default = frappe.get_single("libradash settings")
-	return default.custom_layout
+	return default.layout
