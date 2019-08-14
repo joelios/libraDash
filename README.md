@@ -1,6 +1,6 @@
-## Libradash
+## libraDash
 
-Buissness Dashboard powered by libracore
+libraDash is a ERPNext App from libracore that offers the possibility to create a clear morris.js based dashboard.
 
 #### License
 

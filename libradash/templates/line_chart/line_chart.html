@@ -1,0 +1,35 @@
+<div class="col-lg-{{ width }}">
+	<div class="panel panel-default" id="{{ name }}">
+	<div class="panel-heading">
+		<i class="fa fa-bar-chart-o fa-fw"></i> {{ title }}
+		<!-- Dropdown disabled -->
+		<!-- <div class="pull-right">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default btn-xs dropdown-toggle"
+					data-toggle="dropdown">
+					Actions
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu pull-right" role="menu">
+					<li><a onclick="show_current_year();">Show current year (monetary)</a>
+					</li>
+					<li><a onclick="show_current_year_qty();">Show current year (qty based)</a>
+					</li>
+					<li><a onclick="show_prior_year();">Show prior year (monetary)</a>
+					</li>
+					<li><a onclick="show_prior_year_qty();">Show prior year (qty based)</a>
+					</li>
+					<li><a onclick="show_year_comparative();">Show prior year comparative (monetary)</a>
+					</li>
+				</ul>
+			</div>
+		</div> -->
+	</div>
+	<!-- /.panel-heading -->
+	<div class="panel-body">
+		<div id="{{ name }}-line-chart"></div>
+	</div>
+	<!-- /.panel-body -->
+	</div>
+	<!-- /.panel -->
+</div>

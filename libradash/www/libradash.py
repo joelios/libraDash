@@ -16,10 +16,94 @@ def get_context(context):
 		frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
 
 	context.show_sidebar=True
-	context['new_orders_qty'], context['month'] = new_orders()
-	context['new_delivery_notes_qty'] = new_deliverys()
-	context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
-	context['new_issues_qty'] = new_issues()
+	default = frappe.get_single("libradash settings")
+	context['style'] = default.layout
+	context['charts'] = get_charts()
+	context['querys'] = {}
+	context['dashboard_title'] = default.dashboard_title
+	for chart in get_charts():
+		if chart.typ == "Panel":
+			if chart.panel_sql_query:
+				context['querys'][chart.name] = get_panel_sql_query(chart.panel_sql_query)
+	if not default.layout == "Custom":
+		context['new_orders_qty'], context['month'] = new_orders()
+		context['new_delivery_notes_qty'] = new_deliverys()
+		context['new_sales_invoices_qty'], context['total_value_sales_invoice'] = new_sinvs()
+		context['new_issues_qty'] = new_issues()
+	
+def get_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` ORDER BY `idx` ASC""", as_dict=True)
+	return charts
+	
+@frappe.whitelist()
+def get_line_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Line Chart'""", as_dict=True)
+	for chart in charts:
+		data_arr = {}
+		for line in chart.line_chart_values.splitlines():
+			if line.split("#PER#")[0] in data_arr:
+				data_arr[line.split("#PER#")[0]][line.split("#PER#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#PER#")[1].split("#SQL#")[1], as_list=True)[0][0]
+			else:
+				data_arr[line.split("#PER#")[0]] = {}
+				data_arr[line.split("#PER#")[0]][line.split("#PER#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#PER#")[1].split("#SQL#")[1], as_list=True)[0][0]
+	
+		data = []
+		for period in data_arr:
+			_data = {}
+			_data['period'] = period
+			for key in data_arr[period]:
+				_data[key] = data_arr[period][key]
+			data.append(_data)
+		chart['line_chart_values'] = data
+	return charts
+	
+@frappe.whitelist()
+def get_pie_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Pie Chart'""", as_dict=True)
+	
+	for chart in charts:
+		
+		data = []
+		for line in chart.pie_chart_values.splitlines():
+			data_arr = {}
+			data_arr['label'] = line.split("#SQL#")[0]
+			data_arr['value'] = frappe.db.sql(line.split("#SQL#")[1], as_list=True)[0][0]
+			data.append(data_arr)
+		
+		chart['pie_chart_values'] = data
+	return charts
+	
+@frappe.whitelist()
+def get_bar_charts():
+	charts = frappe.db.sql("""SELECT * FROM `tablibradash diagram` WHERE `typ` = 'Bar Chart'""", as_dict=True)
+	for chart in charts:
+		x_labels = []
+		data = []
+		for line in chart.bar_chart_values.splitlines():
+			if line.split("#XLAB#")[0] not in x_labels:
+				x_labels.append(line.split("#XLAB#")[0])
+		for xlab in x_labels:
+			data_arr = {}
+			for line in chart.bar_chart_values.splitlines():
+				if line.split("#XLAB#")[0] == xlab:
+					if 'y' not in data_arr:
+						data_arr['y'] = xlab
+					data_arr[line.split("#XLAB#")[1].split("#SQL#")[0]] = frappe.db.sql(line.split("#XLAB#")[1].split("#SQL#")[1], as_list=True)[0][0]
+			data.append(data_arr)
+		chart['bar_chart_values'] = data
+	#print(charts)
+	return charts
+	
+@frappe.whitelist()
+def get_query_data(query):
+	if frappe.session.user=='Guest':
+		frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
+	else:
+		result = frappe.db.sql(query, as_list=True)[0][0]
+		return result or 0
+	
+def get_panel_sql_query(query):
+	return frappe.db.sql(query, as_list=True)[0][0]
 	
 def new_orders():
 	month = datetime.now().month
@@ -290,3 +374,8 @@ def get_comparative_qty_based_datas():
 	datas['iss_total']['prior'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-01-01' AND `opening_date` <= '{year}-12-31'""".format(year=prior_year), as_list=True)[0][0]
 	datas['iss_total']['current'] = frappe.db.sql("""SELECT COUNT(`name`) FROM `tabIssue` WHERE `opening_date` >= '{year}-01-01' AND `opening_date` <= '{year}-12-31'""".format(year=current_year), as_list=True)[0][0]
 	return datas
+	
+@frappe.whitelist()
+def get_style():
+	default = frappe.get_single("libradash settings")
+	return default.layout
