@@ -33,6 +33,14 @@ $(function() {
 								if (charts[i].line_chart_parsetime == 'False') {
 									_parsetime = false;
 								}
+								var _ymin = 'auto';
+								if (charts[i].line_chart_ymin) {
+									_ymin = JSON.parse(charts[i].line_chart_ymin);
+								}
+								var _ymax = 'auto';
+								if (charts[i].line_chart_ymax) {
+									_ymax = JSON.parse(charts[i].line_chart_ymax);
+								}
 								Morris.Area({
 									element: charts[i].name + '-line-chart',
 									data: items,
@@ -70,7 +78,10 @@ $(function() {
 									preUnits: charts[i].line_chart_preunits || '',
 									fillOpacity: parseFloat(charts[i].line_chart_fill_opacity),
 									events: JSON.parse(charts[i].line_chart_events) || [],
-									eventLineColors: JSON.parse(charts[i].line_chart_event_colors) || ["#5cb85c", "#5e64ff", "#d9534f"]
+									eventLineColors: JSON.parse(charts[i].line_chart_event_colors) || ["#5cb85c", "#5e64ff", "#d9534f"],
+									ymax: _ymax,
+									ymin: _ymin,
+									behaveLikeLine: true,
 								});
 							}
 						}
