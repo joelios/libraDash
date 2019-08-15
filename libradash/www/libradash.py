@@ -103,7 +103,7 @@ def get_query_data(query):
 		return result or 0
 	
 def get_panel_sql_query(query):
-	return frappe.db.sql(query, as_list=True)[0][0]
+	return frappe.db.sql(query, as_list=True)[0][0] or 0
 	
 def new_orders():
 	month = datetime.now().month
